@@ -18,7 +18,6 @@ import { TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon } from 'lucide
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
-import { usePathname } from 'next/navigation';
 
 const data = {
   user: {
@@ -58,7 +57,6 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const reducedMotion = useReducedMotion();
-  const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon" {...props}>
