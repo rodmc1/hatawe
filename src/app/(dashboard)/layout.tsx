@@ -2,6 +2,7 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -12,6 +13,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const {
     data: { user }
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
 
   const userData = {
     name: user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'User',
