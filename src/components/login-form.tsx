@@ -14,7 +14,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'form'>)
         </div>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" name="email" type="email" placeholder="m@example.com" required className="bg-background" />
+          <Input id="email" name="email" type="email" required className="bg-background" />
         </Field>
         <Field>
           <div className="flex items-center">
