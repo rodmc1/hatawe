@@ -4,7 +4,6 @@ import AvailablePlayers from './_components/players/AvailablePlayers';
 import CourtsGrid from './_components/court/CourtsGrid';
 import QueueList from './_components/queue/QueueList';
 import { QueuingProvider } from './_context/QueuingContext';
-import { Separator } from '@/components/ui/separator';
 import { type QueuePlayer } from './types';
 
 const MOCK_PLAYERS: QueuePlayer[] = [
@@ -27,9 +26,8 @@ const MOCK_PLAYERS: QueuePlayer[] = [
 export default function QueuingPage() {
   return (
     <QueuingProvider allPlayers={MOCK_PLAYERS}>
-      <div className="space-y-4">
+      <div className="space-y-4 mx-4">
         <AvailablePlayers />
-        <Separator />
         <QueueList />
         <CourtsGrid />
       </div>

@@ -13,6 +13,7 @@ export interface PhysicalCourt {
   name: string;
   status: 'idle' | 'playing';
   players: (QueuePlayer | null)[];
+  startedAt: number | null;
 }
 
 interface QueuingState {
@@ -110,7 +111,8 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
       id: `phys-court-${i + 1}`,
       name: `Court ${i + 1}`,
       status: 'idle' as const,
-      players: [null, null, null, null]
+      players: [null, null, null, null],
+      startedAt: null
     })),
     queueCounter: 0,
     courtCounter: initialCourtCount
@@ -216,7 +218,9 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
         ...prev,
         queueSlots: prev.queueSlots.filter(s => s.id !== slotId),
         physicalCourts: prev.physicalCourts.map(c =>
-          c.id === idleCourt.id ? { ...c, status: 'playing' as const, players: [...slot.players] } : c
+          c.id === idleCourt.id
+            ? { ...c, status: 'playing' as const, players: [...slot.players], startedAt: Date.now() }
+            : c
         )
       };
     });
@@ -237,7 +241,8 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
             id: `phys-court-${counter}`,
             name: `Court ${counter}`,
             status: 'idle' as const,
-            players: [null, null, null, null] as (QueuePlayer | null)[]
+            players: [null, null, null, null] as (QueuePlayer | null)[],
+            startedAt: null
           };
         });
         return { ...prev, physicalCourts: [...current, ...added], courtCounter: counter };
@@ -338,7 +343,7 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
         wins: updatedWins,
         losses: updatedLosses,
         physicalCourts: prev.physicalCourts.map(c =>
-          c.id === courtId ? { ...c, status: 'idle' as const, players: [null, null, null, null] } : c
+          c.id === courtId ? { ...c, status: 'idle' as const, players: [null, null, null, null], startedAt: null } : c
         )
       };
     });
@@ -347,7 +352,9 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
   function startCourt(courtId: string) {
     setState(prev => ({
       ...prev,
-      physicalCourts: prev.physicalCourts.map(c => (c.id === courtId ? { ...c, status: 'playing' as const } : c))
+      physicalCourts: prev.physicalCourts.map(c =>
+        c.id === courtId ? { ...c, status: 'playing' as const, startedAt: Date.now() } : c
+      )
     }));
   }
 
