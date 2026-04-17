@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useMemo, type ReactNode } from 'react';
 import { type QueuePlayer } from '../types';
 
 export interface QueueSlot {
@@ -29,6 +29,8 @@ interface QueuingContextValue {
   queueSlots: QueueSlot[];
   physicalCourts: PhysicalCourt[];
   availablePlayers: QueuePlayer[];
+  queuedPlayers: QueuePlayer[];
+  playingPlayers: QueuePlayer[];
   playingCourts: PhysicalCourt[];
   gamesPlayed: Record<number, number>;
   wins: Record<number, number>;
@@ -116,12 +118,24 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
 
   const { gamesPlayed, wins, losses } = state;
 
-  const allUsedIds = new Set([
-    ...state.queueSlots.flatMap(s => s.players.filter(Boolean).map(p => p!.id)),
-    ...state.physicalCourts.flatMap(c => c.players.filter(Boolean).map(p => p!.id))
-  ]);
-  const availablePlayers = allPlayers.filter(p => !allUsedIds.has(p.id));
-  const playingCourts = state.physicalCourts.filter(c => c.status === 'playing');
+  const queuedPlayers = useMemo(
+    () => state.queueSlots.flatMap(s => s.players).filter((p): p is QueuePlayer => p !== null),
+    [state.queueSlots]
+  );
+
+  const playingPlayers = useMemo(
+    () => state.physicalCourts.flatMap(c => c.players).filter((p): p is QueuePlayer => p !== null),
+    [state.physicalCourts]
+  );
+
+  const allUsedIds = useMemo(
+    () => new Set([...queuedPlayers.map(p => p.id), ...playingPlayers.map(p => p.id)]),
+    [queuedPlayers, playingPlayers]
+  );
+
+  const availablePlayers = useMemo(() => allPlayers.filter(p => !allUsedIds.has(p.id)), [allPlayers, allUsedIds]);
+
+  const playingCourts = useMemo(() => state.physicalCourts.filter(c => c.status === 'playing'), [state.physicalCourts]);
 
   // ── Queue actions ──────────────────────────────────────────────────
 
@@ -339,6 +353,8 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
         queueSlots: state.queueSlots,
         physicalCourts: state.physicalCourts,
         availablePlayers,
+        queuedPlayers,
+        playingPlayers,
         playingCourts,
         gamesPlayed,
         wins,

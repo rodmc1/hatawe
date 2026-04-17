@@ -66,7 +66,7 @@ export default function QueuePlayerSlot({ player, slotIndex, slotId }: QueuePlay
                   <>
                     <DropdownMenuLabel>Available</DropdownMenuLabel>
                     {availablePlayers.map(p => (
-                      <DropdownMenuItem key={p.id} onSelect={() => swapInQueue(slotId, slotIndex, p)}>
+                      <DropdownMenuItem key={`available-${p.id}`} onSelect={() => swapInQueue(slotId, slotIndex, p)}>
                         {p.firstname} {p.lastname}
                       </DropdownMenuItem>
                     ))}
@@ -77,7 +77,7 @@ export default function QueuePlayerSlot({ player, slotIndex, slotId }: QueuePlay
                     {availablePlayers.length > 0 && <DropdownMenuSeparator />}
                     <DropdownMenuLabel>In Queue</DropdownMenuLabel>
                     {queueCandidates.map(p => (
-                      <DropdownMenuItem key={p.id} onSelect={() => swapInQueue(slotId, slotIndex, p)}>
+                      <DropdownMenuItem key={`queued-${p.id}`} onSelect={() => swapInQueue(slotId, slotIndex, p)}>
                         {p.firstname} {p.lastname}
                       </DropdownMenuItem>
                     ))}
@@ -88,7 +88,7 @@ export default function QueuePlayerSlot({ player, slotIndex, slotId }: QueuePlay
                     {(availablePlayers.length > 0 || queueCandidates.length > 0) && <DropdownMenuSeparator />}
                     <DropdownMenuLabel>Playing</DropdownMenuLabel>
                     {playingCandidates.map(p => (
-                      <DropdownMenuItem key={p.id} onSelect={() => swapInQueue(slotId, slotIndex, p)}>
+                      <DropdownMenuItem key={`playing-${p.id}`} onSelect={() => swapInQueue(slotId, slotIndex, p)}>
                         {p.firstname} {p.lastname}
                       </DropdownMenuItem>
                     ))}

@@ -18,10 +18,8 @@ import { type QueuePlayer } from '../../types';
 import { type PhysicalCourt, useQueuing } from '../../_context/QueuingContext';
 
 function EmptySlot({ slotIndex, courtId }: { slotIndex: number; courtId: string }) {
-  const { availablePlayers, queueSlots, playingCourts, addToCourtSlot } = useQueuing();
+  const { availablePlayers, queuedPlayers, playingPlayers, addToCourtSlot } = useQueuing();
 
-  const queuedPlayers = queueSlots.flatMap(s => s.players).filter((p): p is QueuePlayer => p !== null);
-  const playingPlayers = playingCourts.flatMap(c => c.players).filter((p): p is QueuePlayer => p !== null);
   const hasCandidates = availablePlayers.length > 0 || queuedPlayers.length > 0 || playingPlayers.length > 0;
 
   if (!hasCandidates) {
@@ -39,7 +37,7 @@ function EmptySlot({ slotIndex, courtId }: { slotIndex: number; courtId: string 
           <>
             <DropdownMenuLabel>Available</DropdownMenuLabel>
             {availablePlayers.map(p => (
-              <DropdownMenuItem key={p.id} onSelect={() => addToCourtSlot(courtId, slotIndex, p)}>
+              <DropdownMenuItem key={`available-${p.id}`} onSelect={() => addToCourtSlot(courtId, slotIndex, p)}>
                 {p.firstname} {p.lastname}
               </DropdownMenuItem>
             ))}
@@ -50,7 +48,7 @@ function EmptySlot({ slotIndex, courtId }: { slotIndex: number; courtId: string 
             {availablePlayers.length > 0 && <DropdownMenuSeparator />}
             <DropdownMenuLabel>In Queue</DropdownMenuLabel>
             {queuedPlayers.map(p => (
-              <DropdownMenuItem key={p.id} onSelect={() => addToCourtSlot(courtId, slotIndex, p)}>
+              <DropdownMenuItem key={`queued-${p.id}`} onSelect={() => addToCourtSlot(courtId, slotIndex, p)}>
                 {p.firstname} {p.lastname}
               </DropdownMenuItem>
             ))}
@@ -61,7 +59,7 @@ function EmptySlot({ slotIndex, courtId }: { slotIndex: number; courtId: string 
             {(availablePlayers.length > 0 || queuedPlayers.length > 0) && <DropdownMenuSeparator />}
             <DropdownMenuLabel>Playing</DropdownMenuLabel>
             {playingPlayers.map(p => (
-              <DropdownMenuItem key={p.id} onSelect={() => addToCourtSlot(courtId, slotIndex, p)}>
+              <DropdownMenuItem key={`playing-${p.id}`} onSelect={() => addToCourtSlot(courtId, slotIndex, p)}>
                 {p.firstname} {p.lastname}
               </DropdownMenuItem>
             ))}
@@ -73,16 +71,12 @@ function EmptySlot({ slotIndex, courtId }: { slotIndex: number; courtId: string 
 }
 
 function PlayerSlot({ player, slotIndex, courtId }: { player: QueuePlayer; slotIndex: number; courtId: string }) {
-  const { availablePlayers, queueSlots, playingCourts, removeFromCourt, swapInCourt } = useQueuing();
+  const { availablePlayers, queuedPlayers, playingPlayers, removeFromCourt, swapInCourt } = useQueuing();
 
-  const queuedPlayers = queueSlots
-    .flatMap(s => s.players)
-    .filter((p): p is QueuePlayer => p !== null && p.id !== player.id);
-  const playingCandidates = playingCourts
-    .flatMap(c => c.players)
-    .filter((p): p is QueuePlayer => p !== null && p.id !== player.id);
+  const queueCandidates = queuedPlayers.filter(p => p.id !== player.id);
+  const playingCandidates = playingPlayers.filter(p => p.id !== player.id);
 
-  const hasSwapCandidates = availablePlayers.length > 0 || queuedPlayers.length > 0 || playingCandidates.length > 0;
+  const hasSwapCandidates = availablePlayers.length > 0 || queueCandidates.length > 0 || playingCandidates.length > 0;
 
   return (
     <DropdownMenu>
@@ -103,18 +97,18 @@ function PlayerSlot({ player, slotIndex, courtId }: { player: QueuePlayer; slotI
                 <>
                   <DropdownMenuLabel>Available</DropdownMenuLabel>
                   {availablePlayers.map(p => (
-                    <DropdownMenuItem key={p.id} onSelect={() => swapInCourt(courtId, slotIndex, p)}>
+                    <DropdownMenuItem key={`available-${p.id}`} onSelect={() => swapInCourt(courtId, slotIndex, p)}>
                       {p.firstname} {p.lastname}
                     </DropdownMenuItem>
                   ))}
                 </>
               )}
-              {queuedPlayers.length > 0 && (
+              {queueCandidates.length > 0 && (
                 <>
                   {availablePlayers.length > 0 && <DropdownMenuSeparator />}
                   <DropdownMenuLabel>In Queue</DropdownMenuLabel>
-                  {queuedPlayers.map(p => (
-                    <DropdownMenuItem key={p.id} onSelect={() => swapInCourt(courtId, slotIndex, p)}>
+                  {queueCandidates.map(p => (
+                    <DropdownMenuItem key={`queued-${p.id}`} onSelect={() => swapInCourt(courtId, slotIndex, p)}>
                       {p.firstname} {p.lastname}
                     </DropdownMenuItem>
                   ))}
@@ -122,10 +116,10 @@ function PlayerSlot({ player, slotIndex, courtId }: { player: QueuePlayer; slotI
               )}
               {playingCandidates.length > 0 && (
                 <>
-                  {(availablePlayers.length > 0 || queuedPlayers.length > 0) && <DropdownMenuSeparator />}
+                  {(availablePlayers.length > 0 || queueCandidates.length > 0) && <DropdownMenuSeparator />}
                   <DropdownMenuLabel>Playing</DropdownMenuLabel>
                   {playingCandidates.map(p => (
-                    <DropdownMenuItem key={p.id} onSelect={() => swapInCourt(courtId, slotIndex, p)}>
+                    <DropdownMenuItem key={`playing-${p.id}`} onSelect={() => swapInCourt(courtId, slotIndex, p)}>
                       {p.firstname} {p.lastname}
                     </DropdownMenuItem>
                   ))}
