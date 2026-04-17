@@ -29,8 +29,9 @@ export default function PlayingCourtCard({ court }: { court: PhysicalCourt }) {
     setEditing(false);
   }
 
-  const team1 = [court.players[0], court.players[1]].filter(Boolean);
-  const team2 = [court.players[2], court.players[3]].filter(Boolean);
+  const isPresentPlayer = <T,>(player: T | null | undefined): player is T => player != null;
+  const team1 = [court.players[0], court.players[1]].filter(isPresentPlayer);
+  const team2 = [court.players[2], court.players[3]].filter(isPresentPlayer);
 
   return (
     <div className="flex flex-col gap-1">
@@ -78,8 +79,8 @@ export default function PlayingCourtCard({ court }: { court: PhysicalCourt }) {
                 <span className="text-sm">🏆</span>
                 <span className="text-xs font-semibold text-gray-700">Team 1</span>
                 {team1.map(p => (
-                  <span key={p!.id} className="text-xs text-gray-400 whitespace-nowrap">
-                    {p!.firstname} {p!.lastname}
+                  <span key={p.id} className="text-xs text-gray-400 whitespace-nowrap">
+                    {p.firstname} {p.lastname}
                   </span>
                 ))}
               </button>
@@ -90,8 +91,8 @@ export default function PlayingCourtCard({ court }: { court: PhysicalCourt }) {
                 <span className="text-sm">🏆</span>
                 <span className="text-xs font-semibold text-gray-700">Team 2</span>
                 {team2.map(p => (
-                  <span key={p!.id} className="text-xs text-gray-400 whitespace-nowrap">
-                    {p!.firstname} {p!.lastname}
+                  <span key={p.id} className="text-xs text-gray-400 whitespace-nowrap">
+                    {p.firstname} {p.lastname}
                   </span>
                 ))}
               </button>

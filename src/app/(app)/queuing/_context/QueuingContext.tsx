@@ -242,8 +242,11 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
         });
         return { ...prev, physicalCourts: [...current, ...added], courtCounter: counter };
       }
-      // Decreasing: remove idle courts from the end only
-      let toRemove = current.length - n;
+      // Decreasing: clamp n so we never try to remove non-idle courts
+      const nonIdleCount = current.filter(c => c.status !== 'idle').length;
+      const target = Math.max(n, nonIdleCount);
+      if (target === current.length) return prev;
+      let toRemove = current.length - target;
       const newCourts = [...current];
       for (let i = newCourts.length - 1; i >= 0 && toRemove > 0; i--) {
         if (newCourts[i].status === 'idle') {

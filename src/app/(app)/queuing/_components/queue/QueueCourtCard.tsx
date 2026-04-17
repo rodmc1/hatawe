@@ -1,5 +1,6 @@
 'use client';
 
+import { Fragment } from 'react';
 import { Play } from 'lucide-react';
 import QueuePlayerSlot from './QueuePlayerSlot';
 import QueueEmptySlot from './QueueEmptySlot';
@@ -46,14 +47,10 @@ export default function QueueCourtCard({ slot, queueNumber }: QueueCourtCardProp
         <span className="text-xs font-semibold text-gray-400 text-center mb-1">Team 1</span>
         <span className="text-xs font-semibold text-gray-400 text-center mb-1">Team 2</span>
         {ROWS.map(({ team1, team2 }) => (
-          <>
-            <div key={`t1-${team1}`} className="mb-2 h-[72px]">
-              {renderSlot(team1)}
-            </div>
-            <div key={`t2-${team2}`} className="mb-2 h-[72px]">
-              {renderSlot(team2)}
-            </div>
-          </>
+          <Fragment key={`row-${team1}`}>
+            <div className="mb-2 h-[72px]">{renderSlot(team1)}</div>
+            <div className="mb-2 h-[72px]">{renderSlot(team2)}</div>
+          </Fragment>
         ))}
       </div>
     </div>

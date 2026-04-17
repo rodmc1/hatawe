@@ -1,4 +1,4 @@
-import { type PlayerLevel, levelColors } from '@/app/(app)/queuing/types';
+import { type PlayerLevel, levelColors } from '@/lib/types/player';
 
 interface PlayerCardProps {
   firstname: string;

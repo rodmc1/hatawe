@@ -86,8 +86,9 @@ function EmptySlot({ slotIndex, courtId }: { slotIndex: number; courtId: string 
       <DropdownMenuTrigger asChild>
         <button
           type="button"
+          aria-label={`Add player to slot ${slotIndex + 1}`}
           className="w-7 h-7 rounded-full border-2 border-dashed border-white/50 flex items-center justify-center text-white/70 hover:border-white hover:text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80">
-          <Plus size={14} />
+          <Plus size={14} aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
