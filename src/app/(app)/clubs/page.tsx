@@ -1,8 +1,10 @@
+import { ClubList } from './_components/ClubList';
+
 export default function ClubsPage() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Clubs</h1>
-      <p className="text-gray-600">Explore and manage your clubs here.</p>
+    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <h1 className="text-lg font-semibold text-foreground">Clubs</h1>
+      <ClubList />
     </div>
   );
 }

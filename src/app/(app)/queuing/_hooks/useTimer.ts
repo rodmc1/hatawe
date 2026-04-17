@@ -41,5 +41,6 @@ function useNow(): number {
 export function useTimer(startedAt: number | null): string {
   const now = useNow();
   if (startedAt === null) return '0:00';
-  return dayjs.duration(now - startedAt).format('m:ss');
+  const elapsed = Math.max(0, now - startedAt);
+  return dayjs.duration(elapsed).format('m:ss');
 }
