@@ -1,10 +1,11 @@
+import { type ReactNode } from 'react';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
   const sidebarState = cookieStore.get('sidebar_state');
   const defaultSidebarOpen = sidebarState ? sidebarState.value === 'true' : true;
