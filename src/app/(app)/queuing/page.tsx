@@ -27,9 +27,8 @@ const MOCK_PLAYERS: QueuePlayer[] = [
 export default function QueuingPage() {
   return (
     <QueuingProvider allPlayers={MOCK_PLAYERS}>
-      <div className="space-y-4">
+      <div className="space-y-4 mx-4">
         <AvailablePlayers />
-        <Separator />
         <QueueList />
         <CourtsGrid />
       </div>
