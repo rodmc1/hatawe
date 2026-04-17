@@ -17,6 +17,7 @@ export default function AvailablePlayers() {
       <div className="p-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {players.map(player => (
           <button
+            type="button"
             key={player.id}
             onClick={() => onAdd(player)}
             className="flex items-center gap-3 px-3 py-3 rounded-lg border border-gray-100 bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 transition-colors text-left w-full group">
