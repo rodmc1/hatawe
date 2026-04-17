@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
   SidebarRail
 } from '@/components/ui/sidebar';
-import { TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon } from 'lucide-react';
+import { LayoutDashboardIcon, UsersIcon, ListOrderedIcon, TrophyIcon, BarChart2Icon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -24,28 +24,28 @@ const data = {
     {
       title: 'Dashboard',
       url: '#',
-      icon: <TerminalSquareIcon />,
+      icon: <LayoutDashboardIcon />,
       isActive: true
     },
     {
       title: 'Clubs',
       url: '#',
-      icon: <BotIcon />
+      icon: <UsersIcon />
     },
     {
       title: 'Queuing',
-      url: '#',
-      icon: <BookOpenIcon />
+      url: '/queuing',
+      icon: <ListOrderedIcon />
     },
     {
       title: 'Tournaments',
       url: '#',
-      icon: <Settings2Icon />
+      icon: <TrophyIcon />
     },
     {
       title: 'Rankings',
       url: '#',
-      icon: <Settings2Icon />
+      icon: <BarChart2Icon />
     }
   ]
 };
