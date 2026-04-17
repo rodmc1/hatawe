@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Inter } from 'next/font/google';
+import type { ReactNode } from 'react';
 
 const inter = Inter({
   variable: '--font-sans',
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>

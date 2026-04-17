@@ -242,14 +242,15 @@ export function QueuingProvider({ allPlayers, initialCourtCount = 2, children }:
         });
         return { ...prev, physicalCourts: [...current, ...added], courtCounter: counter };
       }
-      // Decreasing: clamp n so we never try to remove non-idle courts
-      const nonIdleCount = current.filter(c => c.status !== 'idle').length;
-      const target = Math.max(n, nonIdleCount);
+      // Decreasing: only remove idle courts with no players assigned
+      const isRemovable = (c: PhysicalCourt) => c.status === 'idle' && c.players.every(p => p === null);
+      const removableCount = current.filter(isRemovable).length;
+      const target = Math.max(n, current.length - removableCount);
       if (target === current.length) return prev;
       let toRemove = current.length - target;
       const newCourts = [...current];
       for (let i = newCourts.length - 1; i >= 0 && toRemove > 0; i--) {
-        if (newCourts[i].status === 'idle') {
+        if (isRemovable(newCourts[i])) {
           newCourts.splice(i, 1);
           toRemove--;
         }
