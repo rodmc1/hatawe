@@ -29,7 +29,7 @@ const data = {
     },
     {
       title: 'Clubs',
-      url: '#',
+      url: '/clubs',
       icon: <UsersIcon />
     },
     {
@@ -39,12 +39,12 @@ const data = {
     },
     {
       title: 'Tournaments',
-      url: '#',
+      url: '/tournaments',
       icon: <TrophyIcon />
     },
     {
       title: 'Rankings',
-      url: '#',
+      url: '/rankings',
       icon: <BarChart2Icon />
     }
   ]
