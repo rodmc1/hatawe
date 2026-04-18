@@ -2,9 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { getOrCreateProfile } from '@/lib/supabase/profile';
 import { NextRequest, NextResponse } from 'next/server';
 
-function mapRole(roleName: string): 'owner' | 'admin' | 'member' {
-  if (roleName === 'super_admin') return 'owner';
-  if (roleName === 'club_admin') return 'admin';
+function mapRole(roleName: string): 'admin' | 'member' {
+  if (roleName === 'super_admin' || roleName === 'admin') return 'admin';
   return 'member';
 }
 
@@ -136,8 +135,8 @@ export async function DELETE(_request: NextRequest, { params }: { params: Promis
     return NextResponse.json({ error: 'Club not found or access denied' }, { status: 404 });
   }
 
-  if (mapRole(membership.roles.name) !== 'owner') {
-    return NextResponse.json({ error: 'Only owners can delete clubs' }, { status: 403 });
+  if (mapRole(membership.roles.name) !== 'admin') {
+    return NextResponse.json({ error: 'Only admins can delete clubs' }, { status: 403 });
   }
 
   const { error } = await supabase.from('clubs').delete().eq('id', id);

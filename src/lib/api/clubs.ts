@@ -12,11 +12,13 @@ export interface Club {
   logo?: string;
   memberCount: number;
   members: ClubMember[];
-  role: 'owner' | 'admin' | 'member';
+  role: 'admin' | 'member';
 }
 
 export interface CreateClubInput {
   name: string;
+  description?: string;
+  courtIds?: string[];
 }
 
 export interface UpdateClubInput {
