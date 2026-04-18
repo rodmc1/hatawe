@@ -12,13 +12,14 @@ export interface Club {
   logo?: string;
   memberCount: number;
   members: ClubMember[];
-  role: 'admin' | 'member';
+  role: 'admin' | 'member' | null;
 }
 
 export interface CreateClubInput {
   name: string;
   description?: string;
   courtIds?: string[];
+  logo?: File;
 }
 
 export interface UpdateClubInput {
@@ -36,7 +37,15 @@ export async function getClub(id: string) {
 }
 
 export async function createClub(input: CreateClubInput) {
-  const { data } = await api.post<Club>('/clubs', input);
+  const formData = new FormData();
+  formData.append('name', input.name);
+  if (input.description) formData.append('description', input.description);
+  if (input.courtIds?.length) formData.append('courtIds', JSON.stringify(input.courtIds));
+  if (input.logo) formData.append('logo', input.logo);
+
+  const { data } = await api.post<Club>('/clubs', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
   return data;
 }
 

@@ -58,12 +58,12 @@ export function CreateClubModal({ children }: { children: React.ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-lg max-h-[80vh]">
+      <DialogContent className="sm:max-w-lg max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Create Club</DialogTitle>
           <DialogDescription>Create a new club to start organizing games and managing players.</DialogDescription>
         </DialogHeader>
-        <form id="create-club-form" onSubmit={clubForm.handleSubmit(onSubmit)}>
+        <form id="create-club-form" className="overflow-y-auto" onSubmit={clubForm.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="name"
@@ -101,11 +101,9 @@ export function CreateClubModal({ children }: { children: React.ReactNode }) {
                   <Field>
                     <FieldLabel htmlFor="create-club-logo">Club Logo</FieldLabel>
                     {preview && (
-                      <img
-                        src={preview}
-                        alt="Logo preview"
-                        className="max-h-24 w-full rounded-lg border object-contain p-2"
-                      />
+                      <div className="mx-auto aspect-square overflow-hidden rounded-xl border bg-muted">
+                        <img src={preview} alt="Logo preview" className="size-full object-cover" />
+                      </div>
                     )}
                     <div className="relative">
                       <Input
