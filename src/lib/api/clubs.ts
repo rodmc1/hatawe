@@ -43,9 +43,7 @@ export async function createClub(input: CreateClubInput) {
   if (input.courtIds?.length) formData.append('courtIds', JSON.stringify(input.courtIds));
   if (input.logo) formData.append('logo', input.logo);
 
-  const { data } = await api.post<Club>('/clubs', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
+  const { data } = await api.post<Club>('/clubs', formData);
   return data;
 }
 

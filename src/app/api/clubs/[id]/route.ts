@@ -22,8 +22,8 @@ async function getProfileAndMembership(supabase: any, user: any, clubId: string)
   return { profile, membership };
 }
 
-export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const supabase = await createClient();
   const {
     data: { user }
