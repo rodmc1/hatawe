@@ -102,7 +102,21 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
   }
 
-  const { data: club, error } = await supabase.from('clubs').update(update).eq('id', id).select().single();
+  const { data: club, error } = await supabase
+    .from('clubs')
+    .update(update)
+    .eq('id', id)
+    .select(
+      `
+      id,
+      name,
+      logo_url,
+      club_members (
+        profiles (id, full_name, avatar_url)
+      )
+    `
+    )
+    .single();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -113,8 +127,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     name: club.name,
     logo: club.logo_url,
     role,
-    memberCount: 0,
-    members: []
+    memberCount: club.club_members?.length ?? 0,
+    members: (club.club_members ?? []).map((cm: any) => ({
+      id: cm.profiles.id,
+      name: cm.profiles.full_name,
+      avatar: cm.profiles.avatar_url
+    }))
   });
 }
 

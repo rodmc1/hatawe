@@ -22,6 +22,59 @@ import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from 
 import { MultipleSelect } from '@/components/common/MultipleSelect';
 import { X } from 'lucide-react';
 
+interface LogoFieldProps {
+  value: File | undefined;
+  onChange: (file: File | undefined) => void;
+}
+
+function LogoField({ value, onChange }: LogoFieldProps) {
+  const [preview, setPreview] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (value instanceof File) {
+      const url = URL.createObjectURL(value);
+      setPreview(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreview(null);
+  }, [value]);
+
+  return (
+    <Field>
+      <FieldLabel htmlFor="create-club-logo">Club Logo</FieldLabel>
+      {preview && (
+        <div className="mx-auto aspect-square overflow-hidden rounded-xl border bg-muted">
+          <img src={preview} alt="Logo preview" className="size-full object-cover" />
+        </div>
+      )}
+      <div className="relative">
+        <Input
+          id="create-club-logo"
+          type="file"
+          accept="image/*"
+          className={preview ? 'pr-9' : ''}
+          onChange={e => {
+            const file = e.target.files?.[0];
+            onChange(file);
+          }}
+        />
+        {preview && (
+          <button
+            type="button"
+            onClick={() => {
+              onChange(undefined);
+              const input = document.getElementById('create-club-logo') as HTMLInputElement;
+              if (input) input.value = '';
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex size-5 items-center justify-center rounded-full text-muted-foreground hover:text-foreground">
+            <X className="size-4" />
+          </button>
+        )}
+      </div>
+    </Field>
+  );
+}
+
 const createClubSchema = z.object({
   name: z
     .string()
@@ -85,54 +138,7 @@ export function CreateClubModal({ children }: { children: React.ReactNode }) {
             <Controller
               name="logo"
               control={clubForm.control}
-              render={({ field: { onChange, value, ...field } }) => {
-                const [preview, setPreview] = React.useState<string | null>(null);
-
-                React.useEffect(() => {
-                  if (value instanceof File) {
-                    const url = URL.createObjectURL(value);
-                    setPreview(url);
-                    return () => URL.revokeObjectURL(url);
-                  }
-                  setPreview(null);
-                }, [value]);
-
-                return (
-                  <Field>
-                    <FieldLabel htmlFor="create-club-logo">Club Logo</FieldLabel>
-                    {preview && (
-                      <div className="mx-auto aspect-square overflow-hidden rounded-xl border bg-muted">
-                        <img src={preview} alt="Logo preview" className="size-full object-cover" />
-                      </div>
-                    )}
-                    <div className="relative">
-                      <Input
-                        {...field}
-                        id="create-club-logo"
-                        type="file"
-                        accept="image/*"
-                        className={preview ? 'pr-9' : ''}
-                        onChange={e => {
-                          const file = e.target.files?.[0];
-                          onChange(file);
-                        }}
-                      />
-                      {preview && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onChange(undefined);
-                            const input = document.getElementById('create-club-logo') as HTMLInputElement;
-                            if (input) input.value = '';
-                          }}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 flex size-5 items-center justify-center rounded-full text-muted-foreground hover:text-foreground">
-                          <X className="size-4" />
-                        </button>
-                      )}
-                    </div>
-                  </Field>
-                );
-              }}
+              render={({ field: { onChange, value } }) => <LogoField value={value} onChange={onChange} />}
             />
             <Controller
               name="description"
