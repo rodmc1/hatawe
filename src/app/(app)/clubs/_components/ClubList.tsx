@@ -51,12 +51,16 @@ export function ClubList() {
   const myClubs = clubs.filter(club => club.role === 'admin' || club.role === 'member');
 
   if (clubs.length === 0 && !isFetching) {
-    return <EmptyState />;
+    return (
+      <Card className="shadow-xl">
+        <EmptyState />
+      </Card>
+    );
   }
 
   return (
-    <Tabs defaultValue="all">
-      <Card>
+    <Card className="shadow-xl">
+      <Tabs defaultValue="all">
         <CardHeader>
           <div className="flex items-center justify-between">
             <TabsList>
@@ -81,13 +85,15 @@ export function ClubList() {
             </CreateClubModal>
           </div>
         </CardHeader>
-      </Card>
-      <TabsContent value="all">
-        <ClubGrid clubs={clubs} isFetching={isFetching} />
-      </TabsContent>
-      <TabsContent value="my-clubs">
-        <ClubGrid clubs={myClubs} isFetching={isFetching} />
-      </TabsContent>
-    </Tabs>
+        <CardContent>
+          <TabsContent value="all">
+            <ClubGrid clubs={clubs} isFetching={isFetching} />
+          </TabsContent>
+          <TabsContent value="my-clubs">
+            <ClubGrid clubs={myClubs} isFetching={isFetching} />
+          </TabsContent>
+        </CardContent>
+      </Tabs>
+    </Card>
   );
 }
