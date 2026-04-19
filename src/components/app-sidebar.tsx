@@ -80,7 +80,7 @@ export function AppSidebar({
                     style={reducedMotion ? { color: '#111827' } : undefined}>
                     Hatawe
                   </motion.span>
-                  <span className="text-xs text-gray-400 truncate">Badminton Club</span>
+                  <span className="text-xs text-gray-400 truncate">Badminton</span>
                 </div>
               </Link>
             </SidebarMenuButton>
