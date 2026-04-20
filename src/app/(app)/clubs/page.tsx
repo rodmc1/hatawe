@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { ClubList } from './_components/ClubList';
+
+export const metadata: Metadata = {
+  title: 'Clubs',
+  description: 'Browse and manage badminton clubs. Create your own club, manage courts and members.'
+};
 
 export default function ClubsPage() {
   return (

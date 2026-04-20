@@ -10,8 +10,31 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Hatawe',
-  description: 'Hatawe Badminton'
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://hatawe.app'),
+  title: {
+    default: 'Hatawe',
+    template: '%s | Hatawe'
+  },
+  description:
+    'Hatawe — the all-in-one badminton club platform for managing players, courts, queuing, tournaments, and rankings.',
+  keywords: ['badminton', 'club management', 'tournament', 'queuing', 'rankings', 'courts', 'players'],
+  authors: [{ name: 'Hatawe' }],
+  openGraph: {
+    type: 'website',
+    siteName: 'Hatawe',
+    title: 'Hatawe — Badminton Club Platform',
+    description:
+      'Manage players, courts, queuing, tournaments, and rankings for your badminton club — all in one place.',
+    images: [{ url: '/assets/hatawe.jpg', width: 1200, height: 630, alt: 'Hatawe Badminton' }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Hatawe — Badminton Club Platform',
+    description:
+      'Manage players, courts, queuing, tournaments, and rankings for your badminton club — all in one place.',
+    images: ['/assets/hatawe.jpg']
+  },
+  robots: { index: true, follow: true }
 };
 
 export default function RootLayout({
