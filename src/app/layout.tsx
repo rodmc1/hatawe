@@ -9,8 +9,24 @@ const inter = Inter({
   subsets: ['latin']
 });
 
+const FALLBACK_APP_URL = new URL('https://hatawe.app');
+
+function resolveAppUrl(): URL {
+  const raw = process.env.NEXT_PUBLIC_APP_URL;
+  if (!raw) return FALLBACK_APP_URL;
+  try {
+    return new URL(raw);
+  } catch {
+    if (process.env.NODE_ENV === 'development') {
+      throw new Error(`NEXT_PUBLIC_APP_URL "${raw}" is not a valid absolute URL.`);
+    }
+    console.warn(`NEXT_PUBLIC_APP_URL "${raw}" is not a valid URL. Falling back to ${FALLBACK_APP_URL.href}.`);
+    return FALLBACK_APP_URL;
+  }
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://hatawe.app'),
+  metadataBase: resolveAppUrl(),
   title: {
     default: 'Hatawe',
     template: '%s | Hatawe'
