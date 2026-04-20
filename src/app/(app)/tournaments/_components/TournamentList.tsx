@@ -9,7 +9,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useTournaments } from '@/hooks/useTournaments';
 import { useClubs } from '@/hooks/useClubs';
 import { TournamentCard } from './TournamentCard';
-import { TournamentHeroCard } from './TournamentHeroCard';
 import { CreateTournamentModal } from './modal/CreateTournamentModal';
 import { type Tournament } from '@/lib/api/tournaments';
 
@@ -40,8 +39,8 @@ function EmptyState({ isAdmin }: { isAdmin: boolean }) {
 function TournamentGrid({ tournaments, loading }: { tournaments: Tournament[]; loading: boolean }) {
   if (loading) {
     return (
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {Array.from({ length: 6 }).map((_, i) => (
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
             className="flex flex-col gap-3 rounded-xl border border-border bg-background p-0 overflow-hidden">
@@ -62,18 +61,10 @@ function TournamentGrid({ tournaments, loading }: { tournaments: Tournament[]; l
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Hero card: first/next upcoming */}
-      <TournamentHeroCard tournament={tournaments[0]} />
-
-      {/* Rest of the grid */}
-      {tournaments.length > 1 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {tournaments.slice(1).map(t => (
-            <TournamentCard key={t.id} tournament={t} />
-          ))}
-        </div>
-      )}
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {tournaments.map(t => (
+        <TournamentCard key={t.id} tournament={t} />
+      ))}
     </div>
   );
 }

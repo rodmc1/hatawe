@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { LoginForm } from '@/components/login-form';
+import { LoginForm } from './_components/LoginForm';
 import { AuthRightPanel } from '@/components/auth-right-panel';
 import Image from 'next/image';
 
