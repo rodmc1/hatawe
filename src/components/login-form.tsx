@@ -32,7 +32,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'form'>)
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <Button variant="outline" type="submit" formAction={loginWithGoogle} formNoValidate>
+          <Button
+            variant="outline"
+            type="submit"
+            formAction={loginWithGoogle}
+            formNoValidate
+            className="cursor-pointer">
             <img src="/assets/google.svg" alt="Google" className="size-4" />
             Login with Google
           </Button>

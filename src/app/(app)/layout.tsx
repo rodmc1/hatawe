@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { QueryProvider } from '@/components/providers/QueryProvider';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
@@ -26,14 +27,16 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   };
 
   return (
-    <SidebarProvider defaultOpen={defaultSidebarOpen}>
-      <AppSidebar user={userData} />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-        </header>
-        <main className="flex-1">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+    <QueryProvider>
+      <SidebarProvider defaultOpen={defaultSidebarOpen}>
+        <AppSidebar user={userData} />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+          </header>
+          <main className="flex-1">{children}</main>
+        </SidebarInset>
+      </SidebarProvider>
+    </QueryProvider>
   );
 }

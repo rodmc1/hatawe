@@ -1,9 +1,16 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { signup } from './actions';
 import { loginWithGoogle } from '@/app/(auth)/login/actions';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { AuthRightPanel } from '@/components/auth-right-panel';
+
+export const metadata: Metadata = {
+  title: 'Sign Up',
+  description: 'Create your Hatawe account and start managing your badminton club.',
+  robots: { index: false, follow: false }
+};
 
 export default function SignupPage() {
   return (

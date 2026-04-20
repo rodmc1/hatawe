@@ -29,7 +29,7 @@ const data = {
     },
     {
       title: 'Clubs',
-      url: '#',
+      url: '/clubs',
       icon: <UsersIcon />
     },
     {
@@ -39,12 +39,12 @@ const data = {
     },
     {
       title: 'Tournaments',
-      url: '#',
+      url: '/tournaments',
       icon: <TrophyIcon />
     },
     {
       title: 'Rankings',
-      url: '#',
+      url: '/rankings',
       icon: <BarChart2Icon />
     }
   ]
@@ -80,7 +80,7 @@ export function AppSidebar({
                     style={reducedMotion ? { color: '#111827' } : undefined}>
                     Hatawe
                   </motion.span>
-                  <span className="text-xs text-gray-400 truncate">Badminton Club</span>
+                  <span className="text-xs text-gray-400 truncate">Badminton</span>
                 </div>
               </Link>
             </SidebarMenuButton>
