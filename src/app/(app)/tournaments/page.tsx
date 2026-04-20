@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
 import { TournamentList } from './_components/TournamentList';
 import { AnnouncementPosters } from './_components/AnnouncementPosters';
 import { getAnnouncementPosters } from '@/lib/contentful/announcements';
+
+export const metadata: Metadata = {
+  title: 'Tournaments',
+  description:
+    'Discover and join upcoming badminton tournaments. View announcements, standings, and registration details.'
+};
 
 export default async function TournamentsPage() {
   const posters = await getAnnouncementPosters();

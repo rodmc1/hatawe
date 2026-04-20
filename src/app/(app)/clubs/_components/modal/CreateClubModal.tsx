@@ -116,7 +116,7 @@ export function CreateClubModal({ children }: { children: React.ReactNode }) {
           <DialogTitle>Create Club</DialogTitle>
           <DialogDescription>Create a new club to start organizing games and managing players.</DialogDescription>
         </DialogHeader>
-        <form id="create-club-form" className="overflow-y-auto" onSubmit={clubForm.handleSubmit(onSubmit)}>
+        <form id="create-club-form" className="overflow-y-auto px-1 py-1" onSubmit={clubForm.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="name"

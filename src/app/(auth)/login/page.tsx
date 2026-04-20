@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
 import { LoginForm } from '@/components/login-form';
 import { AuthRightPanel } from '@/components/auth-right-panel';
 import Image from 'next/image';
+
+export const metadata: Metadata = {
+  title: 'Login',
+  description: 'Log in to your Hatawe account.',
+  robots: { index: false, follow: false }
+};
 
 export default function LoginPage() {
   return (
