@@ -81,11 +81,37 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid max_participants' }, { status: 400 });
   }
 
+  // Verify the authenticated user is an admin of the submitted club
+  const { data: membership } = await supabase
+    .from('club_members')
+    .select('roles (name)')
+    .eq('club_id', club_id)
+    .eq('profile_id', profile.id)
+    .single();
+
+  const roleName: string = (membership as any)?.roles?.name ?? '';
+  const isAdmin = roleName === 'super_admin' || roleName === 'admin';
+
+  if (!isAdmin) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
   let poster_url: string | null = null;
 
   if (poster) {
-    const ext = poster.name.split('.').pop();
-    const path = `tournaments/${club_id}/${Date.now()}.${ext}`;
+    const ALLOWED_MIME_TYPES: Record<string, string> = {
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp',
+      'image/gif': 'gif'
+    };
+
+    const ext = ALLOWED_MIME_TYPES[poster.type];
+    if (!ext) {
+      return NextResponse.json({ error: 'Unsupported image type' }, { status: 400 });
+    }
+
+    const path = `tournaments/${club_id}/${crypto.randomUUID()}.${ext}`;
     const buffer = Buffer.from(await poster.arrayBuffer());
 
     const { error: uploadError } = await adminClient.storage

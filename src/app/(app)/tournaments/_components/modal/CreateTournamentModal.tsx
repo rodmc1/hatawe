@@ -93,6 +93,18 @@ function PosterField({ value, onChange }: PosterFieldProps) {
   );
 }
 
+function parseDateLocal(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatDateLocal(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 export function CreateTournamentModal({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
   const createTournament = useCreateTournament();
@@ -177,10 +189,11 @@ export function CreateTournamentModal({ children }: { children: React.ReactNode 
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Tournament Date</FieldLabel>
+                  <FieldLabel htmlFor="create-tournament-date">Tournament Date</FieldLabel>
                   <DatePicker
-                    value={field.value ? new Date(field.value) : undefined}
-                    onChange={date => field.onChange(date ? date.toISOString().split('T')[0] : '')}
+                    id="create-tournament-date"
+                    value={field.value ? parseDateLocal(field.value) : undefined}
+                    onChange={date => field.onChange(date ? formatDateLocal(date) : '')}
                     placeholder="Pick a date"
                     className="w-full"
                   />

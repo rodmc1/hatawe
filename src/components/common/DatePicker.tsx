@@ -14,9 +14,10 @@ export interface DatePickerProps {
   onChange?: (date: Date | undefined) => void;
   placeholder?: string;
   className?: string;
+  id?: string;
 }
 
-export function DatePicker({ value, onChange, placeholder = 'Pick a date', className }: DatePickerProps) {
+export function DatePicker({ value, onChange, placeholder = 'Pick a date', className, id }: DatePickerProps) {
   const [internalDate, setInternalDate] = React.useState<Date | undefined>(value);
   const date = value !== undefined ? value : internalDate;
   const setDate = onChange ?? setInternalDate;
@@ -25,6 +26,7 @@ export function DatePicker({ value, onChange, placeholder = 'Pick a date', class
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          id={id}
           variant="outline"
           data-empty={!date}
           className={cn(
