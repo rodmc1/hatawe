@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { X } from 'lucide-react';
+import { DatePicker } from '@/components/common/DatePicker';
 import { useCreateTournament } from '@/hooks/useTournaments';
 import { useClubs } from '@/hooks/useClubs';
 
@@ -29,14 +30,15 @@ const createTournamentSchema = z.object({
   club_id: z.string().min(1, 'Please select a club'),
   tournament_date: z.string().min(1, 'Tournament date is required'),
   max_participants: z.coerce
-    .number({ invalid_type_error: 'Must be a number' })
+    .number({ message: 'Must be a number' })
     .int()
     .min(2, 'At least 2 participants required')
     .max(512, 'Max 512 participants'),
   poster: z.instanceof(File).optional()
 });
 
-type FormValues = z.infer<typeof createTournamentSchema>;
+type FormInput = z.input<typeof createTournamentSchema>;
+type FormValues = z.output<typeof createTournamentSchema>;
 
 interface PosterFieldProps {
   value: File | undefined;
@@ -91,13 +93,25 @@ function PosterField({ value, onChange }: PosterFieldProps) {
   );
 }
 
+function parseDateLocal(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatDateLocal(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 export function CreateTournamentModal({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
   const createTournament = useCreateTournament();
   const { data: clubs = [] } = useClubs();
   const adminClubs = clubs.filter(c => c.role === 'admin');
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, any, FormValues>({
     resolver: zodResolver(createTournamentSchema),
     defaultValues: {
       name: '',
@@ -124,7 +138,7 @@ export function CreateTournamentModal({ children }: { children: React.ReactNode 
           <DialogTitle>Create Tournament</DialogTitle>
           <DialogDescription>Set up a new tournament for your club.</DialogDescription>
         </DialogHeader>
-        <form id="create-tournament-form" className="overflow-y-auto" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="create-tournament-form" className="overflow-y-auto px-1 py-1" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             {/* Name */}
             <Controller
@@ -156,7 +170,7 @@ export function CreateTournamentModal({ children }: { children: React.ReactNode 
                     <SelectTrigger aria-invalid={fieldState.invalid}>
                       <SelectValue placeholder="Select a club" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper">
                       {adminClubs.map(c => (
                         <SelectItem key={c.id} value={c.id}>
                           {c.name}
@@ -176,7 +190,13 @@ export function CreateTournamentModal({ children }: { children: React.ReactNode 
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="create-tournament-date">Tournament Date</FieldLabel>
-                  <Input {...field} id="create-tournament-date" type="date" aria-invalid={fieldState.invalid} />
+                  <DatePicker
+                    id="create-tournament-date"
+                    value={field.value ? parseDateLocal(field.value) : undefined}
+                    onChange={date => field.onChange(date ? formatDateLocal(date) : '')}
+                    placeholder="Pick a date"
+                    className="w-full"
+                  />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -186,11 +206,12 @@ export function CreateTournamentModal({ children }: { children: React.ReactNode 
             <Controller
               name="max_participants"
               control={form.control}
-              render={({ field, fieldState }) => (
+              render={({ field: { value, ...field }, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="create-tournament-max">Max Participants</FieldLabel>
                   <Input
                     {...field}
+                    value={value as number}
                     id="create-tournament-max"
                     type="number"
                     min={2}
