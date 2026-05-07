@@ -55,15 +55,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const players = (members ?? []).map((m: any) => ({
-    id: m.profiles.id,
-    name: m.profiles.full_name,
-    avatar: m.profiles.avatar_url,
-    phone: m.profiles.phone,
-    role: m.roles.name,
-    membershipStatus: m.membership_status,
-    joinedAt: m.joined_at
-  }));
+  const players = (members ?? [])
+    .filter((m: any) => m.profiles)
+    .map((m: any) => ({
+      id: m.profiles.id,
+      name: m.profiles.full_name,
+      avatar: m.profiles.avatar_url,
+      phone: m.profiles.phone,
+      role: m.roles?.name ?? null,
+      membershipStatus: m.membership_status,
+      joinedAt: m.joined_at
+    }));
 
   return NextResponse.json(players);
 }
