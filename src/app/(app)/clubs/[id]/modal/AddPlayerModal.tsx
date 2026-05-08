@@ -1,3 +1,5 @@
+'use client';
+
 import { FieldLabel } from '@/components/ui/field';
 import {
   Dialog,
@@ -11,12 +13,24 @@ import { useState } from 'react';
 import * as z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DatePicker } from '@/components/common/DatePicker';
+import { type PlayerLevel } from '@/lib/types/player';
+import { useAddPlayer } from '@/hooks/usePlayers';
+
+const PLAYER_LEVELS: PlayerLevel[] = ['unrated', 'beginner', 'intermediate low', 'intermediate high', 'advanced'];
 
 const playerFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address')
+  email: z.string().email('Invalid email address'),
+  level: z.enum(['unrated', 'beginner', 'intermediate low', 'intermediate high', 'advanced']),
+  membershipDate: z.date().optional()
 });
+
+type PlayerFormValues = z.infer<typeof playerFormSchema>;
 
 interface AddPlayerModalProps {
   children: React.ReactNode;
@@ -24,13 +38,24 @@ interface AddPlayerModalProps {
 
 export default function AddPlayerModal({ children }: AddPlayerModalProps) {
   const [open, setOpen] = useState(false);
-  const playerForm = useForm({
+  const params = useParams();
+  const clubId = params.id as string;
+
+  const { mutate: addPlayer, isPending } = useAddPlayer(clubId, () => setOpen(false));
+
+  const playerForm = useForm<PlayerFormValues>({
     resolver: zodResolver(playerFormSchema),
     defaultValues: {
       name: '',
-      email: ''
+      email: '',
+      level: 'unrated',
+      membershipDate: undefined
     }
   });
+
+  function onSubmit(values: PlayerFormValues) {
+    addPlayer(values);
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -40,7 +65,7 @@ export default function AddPlayerModal({ children }: AddPlayerModalProps) {
           <DialogTitle>Add Player</DialogTitle>
           <DialogDescription>Invite new players to join your club and participate in games.</DialogDescription>
         </DialogHeader>
-        <form className="grid w-full gap-4 py-4" onSubmit={playerForm.handleSubmit(data => console.log(data))}>
+        <form className="grid w-full gap-4 py-4" onSubmit={playerForm.handleSubmit(onSubmit)}>
           <Controller
             name="name"
             control={playerForm.control}
@@ -80,6 +105,49 @@ export default function AddPlayerModal({ children }: AddPlayerModalProps) {
               </div>
             )}
           />
+          <Controller
+            name="level"
+            control={playerForm.control}
+            render={({ field }) => (
+              <div className="grid w-full items-center gap-1.5">
+                <FieldLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Level
+                </FieldLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PLAYER_LEVELS.map(level => (
+                      <SelectItem key={level} value={level} className="capitalize">
+                        {level.charAt(0).toUpperCase() + level.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          />
+          <Controller
+            name="membershipDate"
+            control={playerForm.control}
+            render={({ field }) => (
+              <div className="grid w-full items-center gap-1.5">
+                <FieldLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Membership Date
+                </FieldLabel>
+                <DatePicker
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Pick a date"
+                  className="w-full"
+                />
+              </div>
+            )}
+          />
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending ? 'Adding...' : 'Add Player'}
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

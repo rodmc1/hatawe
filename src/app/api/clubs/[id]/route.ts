@@ -22,8 +22,8 @@ async function getProfileAndMembership(supabase: any, user: any, clubId: string)
   return { profile, membership };
 }
 
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient();
   const {
     data: { user }
@@ -34,10 +34,6 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
   }
 
   const { membership } = await getProfileAndMembership(supabase, user, id);
-
-  if (!membership) {
-    return NextResponse.json({ error: 'Club not found or access denied' }, { status: 404 });
-  }
 
   const { data: club, error } = await supabase
     .from('clubs')

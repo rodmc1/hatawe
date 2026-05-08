@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -28,8 +29,13 @@ export default function MemberTable() {
   const params = useParams();
   const clubId = params.id as string;
   const { data: players, isLoading } = usePlayers(clubId);
+  const [mounted, setMounted] = useState(false);
 
-  if (isLoading) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || isLoading) {
     return <p className="text-sm text-muted-foreground py-4">Loading members...</p>;
   }
 

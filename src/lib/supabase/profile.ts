@@ -9,7 +9,15 @@ export async function getOrCreateProfile(
   user: { id: string; email?: string; user_metadata?: Record<string, any> }
 ) {
   // Try to find existing profile
-  const { data: existing } = await supabase.from('profiles').select('id').eq('auth_user_id', user.id).single();
+  const { data: existing, error: selectError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('auth_user_id', user.id)
+    .maybeSingle();
+
+  if (selectError) {
+    console.error('Failed to select profile:', selectError.message, selectError.details, selectError.hint);
+  }
 
   if (existing) return existing;
 
