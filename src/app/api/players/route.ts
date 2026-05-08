@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { getOrCreateProfile } from '@/lib/supabase/profile';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -54,15 +55,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const players = (members ?? []).map((m: any) => ({
-    id: m.profiles.id,
-    name: m.profiles.full_name,
-    avatar: m.profiles.avatar_url,
-    phone: m.profiles.phone,
-    role: m.roles.name,
-    membershipStatus: m.membership_status,
-    joinedAt: m.joined_at
-  }));
+  const players = (members ?? [])
+    .filter((m: any) => m.profiles)
+    .map((m: any) => ({
+      id: m.profiles.id,
+      name: m.profiles.full_name,
+      avatar: m.profiles.avatar_url,
+      phone: m.profiles.phone,
+      role: m.roles?.name ?? null,
+      membershipStatus: m.membership_status,
+      joinedAt: m.joined_at
+    }));
 
   return NextResponse.json(players);
 }
@@ -103,10 +106,11 @@ export async function POST(request: NextRequest) {
   }
 
   // Find or create profile for the invitee
-  let { data: targetProfile } = await supabase.from('profiles').select('id').eq('email', email).maybeSingle();
+  const adminClient = createAdminClient();
+  let { data: targetProfile } = await adminClient.from('profiles').select('id').eq('email', email).maybeSingle();
 
   if (!targetProfile) {
-    const { data: newProfile, error: profileError } = await supabase
+    const { data: newProfile, error: profileError } = await adminClient
       .from('profiles')
       .insert({ full_name: name, email })
       .select('id')

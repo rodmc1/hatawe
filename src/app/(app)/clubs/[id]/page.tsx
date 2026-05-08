@@ -1,10 +1,18 @@
+'use client';
+
+import { useParams } from 'next/navigation';
 import MemberTable from './MemberTable';
 import AddPlayerModal from './modal/AddPlayerModal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useClub } from '@/hooks/useClubs';
 import { Plus } from 'lucide-react';
 
 export default function Club() {
+  const params: { id: string } = useParams();
+  const { data: club = {}, isFetching } = useClub(params.id);
+  console.log(club);
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <h1 className="text-lg font-semibold text-foreground">Club</h1>
