@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Plus, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -111,12 +112,20 @@ export function TournamentList() {
               <TabsTrigger value="past">Past</TabsTrigger>
             </TabsList>
             {isAdmin && (
-              <CreateTournamentModal>
-                <Button>
-                  <Plus data-icon="inline-start" />
-                  New Tournament
+              <div className="flex items-center gap-2">
+                <CreateTournamentModal>
+                  <Button>
+                    <Plus data-icon="inline-start" />
+                    New Tournament
+                  </Button>
+                </CreateTournamentModal>
+                <Button asChild variant="outline">
+                  <Link href="/mini-tournament">
+                    <Plus data-icon="inline-start" />
+                    Start Mini Tournament
+                  </Link>
                 </Button>
-              </CreateTournamentModal>
+              </div>
             )}
           </div>
         </CardHeader>
