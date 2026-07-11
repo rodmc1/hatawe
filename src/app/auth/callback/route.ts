@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
             full_name: (meta.full_name as string | undefined) ?? '',
             email: user.email ?? '',
             avatar_url: (meta.avatar_url as string | undefined) ?? null,
-            skill_level: 'beginner',
+            skill_level: 'Unrated',
           },
           { onConflict: 'id', ignoreDuplicates: true },
         )

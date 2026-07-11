@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
 
 import { NavMain } from "@/components/layout/nav-main"
 import { NavSecondary } from "@/components/layout/nav-secondary"
@@ -15,7 +16,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
-import { LayoutDashboardIcon, UsersIcon, TrophyIcon, ListOrderedIcon, SendIcon } from "lucide-react"
+import { UsersIcon, ListOrderedIcon, TrophyIcon, CalendarDaysIcon } from "lucide-react"
 
 const data = {
   user: {
@@ -25,51 +26,38 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
-      icon: (
-        <LayoutDashboardIcon
-        />
-      ),
-      isActive: true,
-    },
-    {
       title: "Players",
-      url: "#",
-      icon: (
-        <UsersIcon
-        />
-      ),
-    },
-    {
-      title: "Rankings",
-      url: "#",
-      icon: (
-        <TrophyIcon
-        />
-      ),
+      url: "/players",
+      icon: <UsersIcon />,
     },
     {
       title: "Queue",
-      url: "#",
-      icon: (
-        <ListOrderedIcon
-        />
-      )
+      url: "/queue",
+      icon: <ListOrderedIcon />,
     },
-  ],
-  navSecondary: [
     {
-      title: "Feedback",
-      url: "#",
-      icon: (
-        <SendIcon
-        />
-      ),
+      title: "Rankings",
+      url: "/rankings",
+      icon: <TrophyIcon />,
+      disabled: true,
+    },
+    {
+      title: "Tournaments",
+      url: "/tournaments",
+      icon: <CalendarDaysIcon />,
+      disabled: true,
     },
   ],
+  navSecondary: [],
 }
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname()
+  const items = data.navMain.map((item) => ({
+    ...item,
+    isActive: pathname === item.url,
+  }))
+
   return (
     <Sidebar
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
@@ -78,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<a href="#" />} className="py-3 h-auto">
+            <SidebarMenuButton size="lg" render={<a href="/dashboard" />} className="py-3 h-auto">
               <Image
                 src="/hatawe-logo.jpg"
                 alt="Hatawe Logo"
@@ -92,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={items} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

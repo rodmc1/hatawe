@@ -26,6 +26,7 @@ export function NavMain({
     url: string
     icon: React.ReactNode
     isActive?: boolean
+    disabled?: boolean
     items?: {
       title: string
       url: string
@@ -42,8 +43,10 @@ export function NavMain({
             render={<SidebarMenuItem />}
           >
             <SidebarMenuButton
-              tooltip={item.title}
-              render={<a href={item.url} />}
+              tooltip={item.disabled ? `${item.title} — coming soon` : item.title}
+              disabled={item.disabled}
+              className={item.disabled ? 'cursor-not-allowed opacity-50' : undefined}
+              {...(!item.disabled ? { render: <a href={item.url} /> } : {})}
             >
               {item.icon}
               <span>{item.title}</span>
