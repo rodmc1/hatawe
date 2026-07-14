@@ -49,13 +49,13 @@ export async function GET(request: NextRequest) {
         .from('players')
         .upsert(
           {
-            id: user.id,
+            auth_user_id: user.id,
             full_name: (meta.full_name as string | undefined) ?? '',
             email: user.email ?? '',
             avatar_url: (meta.avatar_url as string | undefined) ?? null,
-            skill_level: 'Unrated',
+            skill_level: 'unrated',
           },
-          { onConflict: 'id', ignoreDuplicates: true },
+          { onConflict: 'auth_user_id', ignoreDuplicates: true },
         )
     }
   }

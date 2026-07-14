@@ -14,13 +14,151 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      players: {
+        Row: {
+          id: string
+          auth_user_id: string | null
+          full_name: string
+          email: string | null
+          avatar_url: string | null
+          skill_level: string
+          is_admin: boolean
+          is_member: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          auth_user_id?: string | null
+          full_name: string
+          email?: string | null
+          avatar_url?: string | null
+          skill_level?: string
+          is_admin?: boolean
+          is_member?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          auth_user_id?: string | null
+          full_name?: string
+          email?: string | null
+          avatar_url?: string | null
+          skill_level?: string
+          is_admin?: boolean
+          is_member?: boolean
+          created_at?: string
+        }
+      }
+      sessions: {
+        Row: {
+          id: string
+          name: string
+          venue: string
+          court_count: number
+          status: string
+          created_by: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          venue: string
+          court_count: number
+          status?: string
+          created_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          venue?: string
+          court_count?: number
+          status?: string
+          created_by?: string
+          created_at?: string
+        }
+      }
+      queue_entries: {
+        Row: {
+          id: string
+          session_id: string
+          player_id: string
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          session_id: string
+          player_id: string
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          session_id?: string
+          player_id?: string
+          status?: string
+          created_at?: string
+        }
+      }
+      matches: {
+        Row: {
+          id: string
+          session_id: string
+          court_number: number
+          status: string
+          winning_team: string | null
+          started_at: string
+          completed_at: string | null
+        }
+        Insert: {
+          id?: string
+          session_id: string
+          court_number: number
+          status?: string
+          winning_team?: string | null
+          started_at?: string
+          completed_at?: string | null
+        }
+        Update: {
+          id?: string
+          session_id?: string
+          court_number?: number
+          status?: string
+          winning_team?: string | null
+          started_at?: string
+          completed_at?: string | null
+        }
+      }
+      match_teams: {
+        Row: {
+          id: string
+          match_id: string
+          player_id: string
+          team: string
+        }
+        Insert: {
+          id?: string
+          match_id: string
+          player_id: string
+          team: string
+        }
+        Update: {
+          id?: string
+          match_id?: string
+          player_id?: string
+          team?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<never, never>
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
