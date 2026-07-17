@@ -35,10 +35,10 @@ export async function getPlayers(): Promise<PlayerRow[]> {
   if (error) throw new Error(error.message)
 
   return (data ?? []).map((player) => {
-    const teams = (player.match_teams ?? []) as Array<{
+    const teams = (player.match_teams as unknown as Array<{
       team: string
       matches: { status: string; winning_team: string | null } | null
-    }>
+    }>) ?? []
 
     const matchesPlayed = teams.length
     const wins = teams.filter(
@@ -106,4 +106,16 @@ export async function updatePlayer(
     .eq('id', id)
 
   if (error) throw new Error(error.message)
+}
+
+export async function getIsAdmin(): Promise<boolean> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return false
+  const { data } = await supabase
+    .from('players')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single()
+  return data?.is_admin ?? false
 }

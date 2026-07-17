@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { SiteHeader } from '@/components/layout/site-header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { getPlayers } from './actions'
+import { getPlayers, getIsAdmin } from './actions'
 import {
   type Player,
   type PlayerLevel,
@@ -40,10 +40,14 @@ export default function Page() {
   const [membershipFilter, setMembershipFilter] = useState<'All' | 'Member' | 'Non Member'>('All')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    getPlayers()
-      .then((rows) => setPlayers(rows.map(dbPlayerToUi)))
+    Promise.all([getPlayers(), getIsAdmin()])
+      .then(([rows, admin]) => {
+        setPlayers(rows.map(dbPlayerToUi))
+        setIsAdmin(admin)
+      })
       .catch(console.error)
       .finally(() => setIsLoading(false))
   }, [])
@@ -82,6 +86,7 @@ export default function Page() {
                       </p>
                     </div>
 
+                    {isAdmin && (
                     <Button
                       size="lg"
                       onClick={() => setIsAddModalOpen(true)}
@@ -90,6 +95,7 @@ export default function Page() {
                       <Plus className="h-4 w-4" />
                       Add Player
                     </Button>
+                    )}
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -137,6 +143,7 @@ export default function Page() {
                           key={player.id}
                           player={player}
                           onEdit={setEditingPlayer}
+                          isAdmin={isAdmin}
                         />
                       ))
                     ) : (
@@ -149,21 +156,25 @@ export default function Page() {
               </div>
             </div>
 
-            <AddPlayerModal
-              open={isAddModalOpen}
-              onClose={() => setIsAddModalOpen(false)}
-              onAdd={(player) => setPlayers((prev) => [player, ...prev])}
-            />
+            {isAdmin && (
+              <>
+                <AddPlayerModal
+                  open={isAddModalOpen}
+                  onClose={() => setIsAddModalOpen(false)}
+                  onAdd={(player) => setPlayers((prev) => [player, ...prev])}
+                />
 
-            <EditPlayerModal
-              player={editingPlayer}
-              onClose={() => setEditingPlayer(null)}
-              onSave={(updated) =>
-                setPlayers((prev) =>
-                  prev.map((p) => (p.id === updated.id ? updated : p)),
-                )
-              }
-            />
+                <EditPlayerModal
+                  player={editingPlayer}
+                  onClose={() => setEditingPlayer(null)}
+                  onSave={(updated) =>
+                    setPlayers((prev) =>
+                      prev.map((p) => (p.id === updated.id ? updated : p)),
+                    )
+                  }
+                />
+              </>
+            )}
           </SidebarInset>
         </div>
       </SidebarProvider>

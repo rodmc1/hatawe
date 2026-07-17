@@ -24,6 +24,7 @@ export type Database = {
           skill_level: string
           is_admin: boolean
           is_member: boolean
+          is_guest: boolean
           created_at: string
         }
         Insert: {
@@ -35,6 +36,7 @@ export type Database = {
           skill_level?: string
           is_admin?: boolean
           is_member?: boolean
+          is_guest?: boolean
           created_at?: string
         }
         Update: {
@@ -46,8 +48,10 @@ export type Database = {
           skill_level?: string
           is_admin?: boolean
           is_member?: boolean
+          is_guest?: boolean
           created_at?: string
         }
+        Relationships: []
       }
       sessions: {
         Row: {
@@ -77,6 +81,7 @@ export type Database = {
           created_by?: string
           created_at?: string
         }
+        Relationships: []
       }
       queue_entries: {
         Row: {
@@ -100,6 +105,7 @@ export type Database = {
           status?: string
           created_at?: string
         }
+        Relationships: []
       }
       matches: {
         Row: {
@@ -129,6 +135,7 @@ export type Database = {
           started_at?: string
           completed_at?: string | null
         }
+        Relationships: []
       }
       match_teams: {
         Row: {
@@ -149,6 +156,7 @@ export type Database = {
           player_id?: string
           team?: string
         }
+        Relationships: []
       }
     }
     Views: {
